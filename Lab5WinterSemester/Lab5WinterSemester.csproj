@@ -8,11 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Console" />
-      <Folder Include="Core" />
-    </ItemGroup>
-
-    <ItemGroup>
       <Page Update="Desktop\MainWindow.xaml">
         <Generator>MSBuild:Compile</Generator>
         <XamlRuntime>Wpf</XamlRuntime>

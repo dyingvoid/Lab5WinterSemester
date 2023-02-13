@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DBFirstLab;
+namespace Lab5WinterSemester.Core;
 
 public class DbStructure
 {

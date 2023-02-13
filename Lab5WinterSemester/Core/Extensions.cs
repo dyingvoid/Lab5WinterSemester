@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 
-namespace DBFirstLab;
+namespace Lab5WinterSemester.Core;
 
 public static class Extensions
 {

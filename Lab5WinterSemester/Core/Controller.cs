@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text.Json;
 
-namespace DBFirstLab;
+namespace Lab5WinterSemester.Core;
 
 public class Controller
 {
