@@ -5,12 +5,12 @@ using System.Linq;
 
 namespace Lab5WinterSemester.Core.TableClasses;
 
-public class CsvTable : AbstractTable, IEnumerable<List<string?>>
+public class CsvTable : TableBase<List<List<string?>>>, IEnumerable<List<string?>>
 {
     public CsvTable(List<List<string?>> table, CsvTable csv)
     {
         Types = csv.Types;
-        Columns = csv.Columns;
+        Names = csv.Names;
         Shape = new Tuple<long?, long?>(null, null);
 
         try
@@ -38,7 +38,7 @@ public class CsvTable : AbstractTable, IEnumerable<List<string?>>
 
     public void SetShape()
     {
-        Shape = Tuple.Create<long?, long?>(Columns.Count, Table.Count);
+        Shape = Tuple.Create<long?, long?>(Names.Count, Table.Count);
     }
 
     public void MakeEmptyAndSpaceElementsNull()
@@ -51,6 +51,46 @@ public class CsvTable : AbstractTable, IEnumerable<List<string?>>
                     stroke[j] = null;
             }
         }
+    }
+    
+    public List<string?> GetColumnWithName(TContainer table, List<string> columnNames, string columnName)
+    {
+        var indexOfColumn = columnNames.FindIndex(name=> name == columnName);
+
+        if (indexOfColumn < 0)
+        {
+            var ex = new ArgumentException();
+            ex.Message = $"Could not find column with name {columnName} in Columns";
+            throw new ArgumentOutOfRangeException($"Could not find column with name {columnName} in Columns");
+        }
+
+        try
+        {
+            return GetColumnWithIndex(table, indexOfColumn);
+        }
+        catch (Exception ex)
+        {
+            Logger.GetInstance().Log(ex, $"Could not find data of {columnName} column. " +
+                                         $"Check format of table");
+            throw;
+        }
+    }
+    
+    public List<string?> GetColumnWithName(string columnName)
+    {
+        return GetColumnWithName(Table, Names, columnName);
+    }
+    
+    public List<string?> GetColumnWithIndex(TContainer table, int index)
+    {
+        var column = new List<string?>();
+
+        foreach (var stroke in table)
+        {
+            column.Add(stroke[index]);
+        }
+
+        return column;
     }
 
     IEnumerator IEnumerable.GetEnumerator()
@@ -72,16 +112,16 @@ public class CsvTable : AbstractTable, IEnumerable<List<string?>>
     // Since method creates new CsvTable, mb it is worth to create Factory pattern.
     public void MergeByColumn(CsvTable csv, string columnName1, string columnName2)
     {
-        var thisColumnIndex = Columns.FindIndex(name => name == columnName1);
-        var csvColumnIndex = csv.Columns.FindIndex(name => name == columnName2);
+        var thisColumnIndex = Names.FindIndex(name => name == columnName1);
+        var csvColumnIndex = csv.Names.FindIndex(name => name == columnName2);
 
         var elementsIntersection = GetColumnWithIndex(Table, thisColumnIndex)
             .Intersect(GetColumnWithIndex(csv.Table, csvColumnIndex));
 
         Table = CreateMergedTable(csv, elementsIntersection, csvColumnIndex, thisColumnIndex);
 
-        Columns.AddRange(csv.Columns);
-        Columns.Remove(columnName2);
+        Names.AddRange(csv.Names);
+        Names.Remove(columnName2);
         
         foreach (var (name, type) in csv.Types)
             Types.Add(name, type);
@@ -122,116 +162,5 @@ public class CsvTable : AbstractTable, IEnumerable<List<string?>>
         }
 
         return mergedTables;
-    }
-
-    public void Print()
-    {
-        if (Table.Count == 0 && Columns.Count == 0)
-        {
-            Console.WriteLine("Empty");
-            return;
-        }
-
-        var columnWidths = new List<int>();
-        foreach (var column in Columns)
-        {
-            columnWidths.Add(GetColumnWidth(column));
-        }
-
-        PrintColumns(columnWidths);
-        PrintContent(columnWidths);
-        PrintBorder(columnWidths);
-    }
-
-    private void PrintContent(List<int> columnWidths)
-    {
-        foreach (var stroke in this)
-        {
-            var enumerator = columnWidths.GetEnumerator();
-            enumerator.MoveNext();
-
-            for (var i = 0; i < stroke.Count; ++i)
-            {
-                if(stroke[i] == null)
-                    Console.Write($"|n/a" + new string(' ', enumerator.Current - 3));
-                else
-                    Console.Write($"|{stroke[i]}" + new string(' ', enumerator.Current - stroke[i].Length));
-                
-                enumerator.MoveNext();
-            }
-
-            Console.WriteLine('|');
-        }
-    }
-
-    private void PrintBorder(List<int> widths)
-    {
-        var lens = new List<int>() {0};
-        int len = 0;
-        
-        foreach (var width in widths)
-        {
-            len += width + 1;
-            lens.Add(len);
-        }
-        
-        for (var i = 0; i < widths.Sum() + widths.Count + 1; ++i)
-        {
-            if(lens.Contains(i))
-                Console.Write('|');
-            else
-                Console.Write('-');
-        }
-        
-        Console.WriteLine();
-    }
-
-    private void PrintColumns(List<int> columnWidths)
-    {
-        int length = 0;
-        List<int> lens = new List<int>();
-        
-        foreach (var (width, name) in columnWidths.Zip(Columns))
-        {
-            string output = $"|{name}" + new string(' ', width - name.Length);
-            length += output.Length;
-            lens.Add(length);
-            Console.Write(output);
-        }
-        Console.WriteLine("|");
-        Console.Write("|");
-
-        for (var i = 0; i < length; ++i)
-        {
-            if(lens.Contains(i+1))
-                Console.Write('|');
-            else
-                Console.Write('-');
-        }
-        Console.WriteLine();
-    }
-    
-    private int GetColumnWidth(string columnName)
-    {
-        var column = GetColumnWithName(columnName);
-
-        int length = 0;
-        foreach (var element in column)
-        {
-            if (element!= null && element.Length > length)
-                length = element.Length;
-        }
-
-        try
-        {
-            var smt = Columns.Find(name => name == columnName).Length;
-        }
-        catch (Exception)
-        {
-            Console.WriteLine($"There is no column with name {columnName}");
-            throw;
-        }
-
-        return Math.Max(length, Columns.Find(name => name == columnName).Length);
     }
 }

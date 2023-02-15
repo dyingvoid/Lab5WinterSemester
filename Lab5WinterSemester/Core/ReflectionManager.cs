@@ -31,7 +31,7 @@ public class ReflectionManager
         return typeof(Extensions).GetMethod("ToTypeWithClassConstraint").MakeGenericMethod(type);
     }
     
-    public static void TryCastToType(Type type, MethodInfo castGenericMethod, string? element)
+    public static void TryCastToType(Type type, MethodInfo castGenericMethod, object? element)
     {
         try
         {

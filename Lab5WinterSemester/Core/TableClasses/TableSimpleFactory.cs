@@ -2,41 +2,30 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Lab5WinterSemester.Core.Testers;
 
 namespace Lab5WinterSemester.Core.TableClasses;
 
-public class TableFactory
+public class TableSimpleFactory
 {
     private List<string> _supportedFileExtensions;
     
-    public TableFactory()
+    public TableSimpleFactory()
     {
         _supportedFileExtensions = new List<string>() { ".csv" };
     }
 
-    public CsvTable? CreateCsvTable(FileInfo tableFile, Dictionary<string, string> configuration)
+    private TableBase CreateTable(FileInfo tableFile, Dictionary<string, string> configuration)
     {
-        try
-        {
-            List<List<string?>> table = ReadFromFileToList(tableFile);
-            var columnTypes = SetColumnTypes(configuration);
-            var columnNames = SetColumnNames(table);
-            table.RemoveAt(0);
-            var shape = SetShape(table, columnNames);
-            MakeEmptyAndSpaceElementsNull(table);
+        var table = ReadFromFileToDict(tableFile, configuration);
+        var columnTypes = SetColumnTypes(configuration);
+        MakeEmptyAndSpaceElementsNull(table);
 
-            var csvTable = new CsvTable(table, columnTypes, columnNames, shape);
+        var tableBase = new TableBase(table, columnTypes);
 
-            var tableTester = new TableTester(csvTable);
-            tableTester.Test();
-
-            return csvTable;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message + $" Could not create CsvTable with {tableFile.Name}.");
-            return null;
-        }
+        var tester = new TableTester(tableBase);
+        
+        return tester.Test() ? tableBase : new TableBase();
     }
 
     private List<List<string>> ReadFromFileToList(FileInfo tableFile)
@@ -51,7 +40,17 @@ public class TableFactory
         
         return tempCsvTable;
     }
-    
+
+    private Dictionary<string, List<object?>> ReadFromFileToDict(FileInfo tableFile, Dictionary<string, string> configuration)
+    {
+        if (!_supportedFileExtensions.Any(name => tableFile.Name.EndsWith(name)))
+            throw new Exception("Can't read non csv file.");
+
+        var lines = File.ReadAllLines(tableFile.FullName).ToList();
+
+        return new Dictionary<string, List<object?>>();
+    }
+
     private Dictionary<string, Type> SetColumnTypes(Dictionary<string, string> typesConfig)
     {
         var types = new Dictionary<string, Type>();
@@ -84,21 +83,17 @@ public class TableFactory
             throw;
         }
     }
-    
-    public void MakeEmptyAndSpaceElementsNull(List<List<string>> table)
+
+    public void MakeEmptyAndSpaceElementsNull(Dictionary<string, List<object?>> table)
     {
-        foreach (var stroke in table)
+        foreach (var (key, column) in table)
         {
-            for (var j = 0; j < stroke.Count; ++j)
+            for (var i = 0; i < column.Count; i++)
             {
-                if(stroke[j].IsEmptyOrWhiteSpace()) 
-                    stroke[j] = null;
+                if (column[i] is not null && column[i].ToString().IsEmptyOrWhiteSpace())
+                    column[i] = null;
             }
+            
         }
-    }
-    
-    private Tuple<long?, long?> SetShape(List<List<string>> table, List<string> columnNames)
-    {
-        return Tuple.Create<long?, long?>(table.Count, columnNames.Count);
     }
 }

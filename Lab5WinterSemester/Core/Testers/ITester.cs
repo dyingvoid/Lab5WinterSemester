@@ -1,4 +1,4 @@
-﻿namespace Lab5WinterSemester.Core;
+﻿namespace Lab5WinterSemester.Core.Testers;
 
 public interface ITester
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Lab5WinterSemester.Core;
+namespace Lab5WinterSemester.Core.Exceptions;
 
 public class CustomExceptionExample : Exception
 {
