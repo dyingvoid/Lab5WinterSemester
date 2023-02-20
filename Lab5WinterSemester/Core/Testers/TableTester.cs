@@ -70,7 +70,7 @@ public class TableTester : ITester
         // Foreach column
         foreach (var (key, column) in _table.Table)
         {
-            var columnType = _table.FindTypeInJsonByColumnName(key);
+            var state = _table.Types.TryGetValue(key, out var columnType);
             
             try
             {

@@ -28,15 +28,12 @@ public class TableSimpleFactory
         return tester.Test() ? tableBase : new TableBase();
     }
 
-    private List<List<string>> ReadFromFileToList(FileInfo tableFile)
+    private Dictionary<string, List<object?>> ReadFromFileToList(FileInfo tableFile)
     {
         if (!_supportedFileExtensions.Any(name => tableFile.Name.EndsWith(name)))
             throw new Exception("Can't read non csv file.");
-        
-        var tempCsvTable = File.ReadAllLines(tableFile.FullName)
-            .ToList()
-            .PureForEach<List<string>, string, List<List<string>>, List<string>>
-                (line => line.Split(',').ToList());
+
+        var tempCsvTable = new Dictionary<string, List<object?>>();
         
         return tempCsvTable;
     }
@@ -90,7 +87,7 @@ public class TableSimpleFactory
         {
             for (var i = 0; i < column.Count; i++)
             {
-                if (column[i] is not null && column[i].ToString().IsEmptyOrWhiteSpace())
+                if (column[i] is not null && column[i].IsEmptyOrWhiteSpace())
                     column[i] = null;
             }
             

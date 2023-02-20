@@ -42,6 +42,11 @@ public class TableBase : IEnumerable
         return _table[columnName];
     }
 
+    public List<object?> GetColumn(int index)
+    {
+        return _table.ElementAt(index).Value;
+    }
+
     IEnumerator IEnumerable.GetEnumerator()
     {
         return GetEnumerator();
@@ -50,19 +55,5 @@ public class TableBase : IEnumerable
     public IEnumerator GetEnumerator()
     {
         return _table.GetEnumerator();
-    }
-
-    public Type FindTypeInJsonByColumnName(string name)
-    {
-        try
-        {
-            var type = Types[name];
-            return type;
-        }
-        catch (Exception ex)
-        {
-            Logger.GetInstance().Log(ex, $"Could not find {name} column in json structure.");
-            throw;
-        }
     }
 }
