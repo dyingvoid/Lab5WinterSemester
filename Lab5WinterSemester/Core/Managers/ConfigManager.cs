@@ -2,9 +2,9 @@
 using System.IO;
 using System.Text.Json;
 
-namespace Lab5WinterSemester.Core;
+namespace Lab5WinterSemester.Core.Managers;
 
-public class Controller
+public class ConfigManager
 {
     public static int NumberOfFieldsAndProps<TObj>()
     {

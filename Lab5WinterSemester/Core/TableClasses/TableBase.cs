@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Lab5WinterSemester.Core.Loggers;
 
 namespace Lab5WinterSemester.Core.TableClasses;
 
@@ -12,13 +11,14 @@ public class TableBase : IEnumerable
 
     public TableBase()
     {
+        _table = new Dictionary<string, List<object?>>();
         Types = new Dictionary<string, Type>();
     }
 
     public TableBase(Dictionary<string, List<object?>> table, 
         Dictionary<string, Type> columnTypes)
     {
-        Table = table;
+        _table = table;
         Types = columnTypes;
     }
     

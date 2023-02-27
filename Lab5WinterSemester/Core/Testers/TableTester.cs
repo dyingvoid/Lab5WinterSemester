@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Lab5WinterSemester.Core.Loggers;
+using Lab5WinterSemester.Core.Managers;
 using Lab5WinterSemester.Core.TableClasses;
 
 namespace Lab5WinterSemester.Core.Testers;
@@ -15,7 +16,7 @@ public class TableTester : ITester
         _table = table;
     }
 
-    private delegate V MyDelegate<U, out V>( out U output);
+    private delegate TV MyDelegate<TU, out TV>( out TU output);
     
     public bool Test()
     {
@@ -31,10 +32,12 @@ public class TableTester : ITester
 
     private List<MyDelegate<string, bool>> SelectTests()
     {
-        var testList = new List<MyDelegate<string, bool>>();
-        testList.Add(CheckStructureEquality);
-        testList.Add(CheckTableDimensionsEquality);
-        testList.Add(CheckColumnsDataTypeEquality);
+        var testList = new List<MyDelegate<string, bool>>
+        {
+            CheckStructureEquality,
+            CheckTableDimensionsEquality,
+            CheckColumnsDataTypeEquality
+        };
 
         return testList;
     }

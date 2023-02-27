@@ -83,8 +83,9 @@ public class TableSimpleFactory
 
     public void MakeEmptyAndSpaceElementsNull(Dictionary<string, List<object?>> table)
     {
-        foreach (var (key, column) in table)
+        foreach (var pair in table)
         {
+            var column = pair.Value;
             for (var i = 0; i < column.Count; i++)
             {
                 if (column[i] is not null && column[i].IsEmptyOrWhiteSpace())

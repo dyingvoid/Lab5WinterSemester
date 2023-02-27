@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Reflection;
 
-namespace Lab5WinterSemester.Core;
+namespace Lab5WinterSemester.Core.Managers;
 
 public static class ReflectionManager
 {
@@ -24,7 +24,7 @@ public static class ReflectionManager
     
     public static MethodInfo ChooseGenericMethodByTypeConstraints(Type type)
     {
-        if (type.IsValueType && !type.IsEnum)
+        if (type is { IsValueType: true, IsEnum: false })
             return typeof(ReflectionManager).GetMethod("ToTypeWithStructConstraint").MakeGenericMethod(type);
         if (type.IsEnum)
             return typeof(ReflectionManager).GetMethod("ToTypeEnumConstraint").MakeGenericMethod(type);
@@ -36,7 +36,7 @@ public static class ReflectionManager
     {
         try
         {
-            castGenericMethod.Invoke(null, new object[] { element });
+            castGenericMethod.Invoke(null, new [] { element });
         }
         catch (Exception)
         {
