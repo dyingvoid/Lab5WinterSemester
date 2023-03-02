@@ -6,16 +6,16 @@
         xmlns:controls="clr-namespace:Lab5WinterSemester.Desktop.UserControls"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid x:Name="Grid">
+    <Grid x:Name="MainGrid">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="25"></ColumnDefinition>
-            <ColumnDefinition Width="5*"></ColumnDefinition>
-            <ColumnDefinition Width="5*"></ColumnDefinition>
-            <ColumnDefinition Width="20*"></ColumnDefinition>
+            <controls:MainColumnDefinition Width="25"/>
+            <controls:MainColumnDefinition Width="5*"/>
+            <controls:MainColumnDefinition Width="5*"/>
+            <controls:MainColumnDefinition Width="20*" x:Name="Four"/>
         </Grid.ColumnDefinitions>
-        <controls:MenuBar x:Name="menuBar" Grid.Column="0"></controls:MenuBar>
-        <controls:Explorer x:Name="explorer" Grid.Column="1"></controls:Explorer>
-        <controls:MetaData x:Name="metaData" Grid.Column="2"></controls:MetaData>
-        <controls:Data x:Name="data" Grid.Column="3"></controls:Data>
+        <controls:MenuBar x:Name="menuBar" Grid.Column="0"/>
+        <controls:Explorer x:Name="explorer" Grid.Column="1"/>
+        <controls:MetaData x:Name="metaData" Grid.Column="2"/>
+        <controls:Data x:Name="data" Grid.Column="3"/>
     </Grid>
 </Window>

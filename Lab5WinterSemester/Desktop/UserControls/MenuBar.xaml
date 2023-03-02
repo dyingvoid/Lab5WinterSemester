@@ -7,16 +7,16 @@
              xmlns:desktop="clr-namespace:Lab5WinterSemester.Desktop"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid x:Name="grid">
+    <Grid x:Name="MenuBarGrid">
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
             <RowDefinition></RowDefinition>
         </Grid.RowDefinitions>
-        <Button Grid.Row="0" Name="BtnDbOpen">Open DB</Button>
-        <ToggleButton Grid.Row="1" Name="TogBtnExplorer">Explorer</ToggleButton>
-        <ToggleButton Grid.Row="2" Name="TogBtnMetaData">MetaData</ToggleButton>
-        <ToggleButton Grid.Row="3" Name="TogBtnData">Data</ToggleButton>
+        <Button Grid.Row="0" x:Name="BtnDbOpen">Open DB</Button>
+        <ToggleButton Grid.Row="1" x:Name="TogBtnExplorer">Explorer</ToggleButton>
+        <ToggleButton Grid.Row="2" x:Name="TogBtnMetaData">MetaData</ToggleButton>
+        <ToggleButton Grid.Row="3" x:Name="TogBtnData">Data</ToggleButton>
     </Grid>
 </UserControl>

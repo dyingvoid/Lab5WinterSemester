@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using Lab5WinterSemester.Desktop.UserControls;
 
 
 namespace Lab5WinterSemester.Desktop
@@ -10,64 +11,31 @@ namespace Lab5WinterSemester.Desktop
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly List<GridLength> _columnWidths;
-        private List<ToggleButton> _buttons;
-
         public MainWindow()
         {
             InitializeComponent();
 
-            _columnWidths = new List<GridLength>();
-            RememberWidths();
-
-            ConfigureButtonEvents();
+            ConfigureToggleButtons();
         }
 
-        private void ConfigureButtonEvents()
+        private void ConfigureToggleButtons()
         {
-            _buttons = new List<ToggleButton>()
-            {
-                menuBar.TogBtnExplorer,
-                menuBar.TogBtnMetaData,
-                menuBar.TogBtnData
-            };
+            menuBar.AddHandler(ToggleButton.CheckedEvent, new RoutedEventHandler(ChangeDefinitionVisibility));
+            menuBar.AddHandler(ToggleButton.UncheckedEvent, new RoutedEventHandler(ChangeDefinitionVisibility));
+        }
+
+        private void ChangeDefinitionVisibility(object sender, RoutedEventArgs e)
+        {
+            var indexOfButton = menuBar.MenuBarGrid.Children.IndexOf((UIElement)e.OriginalSource);
+            var definition = MainGrid.ColumnDefinitions
+                .Cast<MainColumnDefinition>().GetEnumerator();
             
-            foreach (var btn in _buttons)
-            {
-                btn.Checked += ShowColumnEvent;
-                btn.Unchecked += HideColumnEvent;
-            }
-        }
+            for (int i = 0; i <= indexOfButton; ++i)
+                definition.MoveNext();
+            
+            definition.Current.ChangeVisibility();
 
-        private void ShowColumnEvent(object sender, RoutedEventArgs e)
-        {
-            var buttonIndex = _buttons.FindIndex(button => button == (ToggleButton)sender);
-            ShowColumn(buttonIndex + 1);
+            definition.Dispose();
         }
-
-        private void HideColumnEvent(object sender, RoutedEventArgs e)
-        {
-            var buttonIndex = _buttons.FindIndex(button => button == (ToggleButton)sender);
-            HideColumn(buttonIndex + 1);
-        }
-
-        private void HideColumn(int index)
-        {
-            Grid.ColumnDefinitions[index].Width = new GridLength(0);
-        }
-
-        private void ShowColumn(int index)
-        {
-            Grid.ColumnDefinitions[index].Width = _columnWidths[index];
-        }
-
-        private void RememberWidths()
-        {
-            foreach (var columnDefinition in Grid.ColumnDefinitions)
-            {
-                _columnWidths.Add(columnDefinition.Width);
-            }
-        }
-
     }
 }
