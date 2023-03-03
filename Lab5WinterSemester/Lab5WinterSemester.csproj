@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Page Update="Desktop\MainWindow.xaml">
+      <Page Update="Desktop\Views\MainWindow.xaml">
         <Generator>MSBuild:Compile</Generator>
         <XamlRuntime>Wpf</XamlRuntime>
         <SubType>Designer</SubType>
