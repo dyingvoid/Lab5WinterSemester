@@ -2,9 +2,9 @@
 
 public static class TableExtensions
 {
-    public static void MakeEmptyAndSpaceElementsNull(this TableBase table)
+    public static void MakeEmptyAndSpaceElementsNull(this DataBase data)
     {
-        foreach (var pair in table.Table)
+        foreach (var pair in data.Table)
         {
             var column = pair.Value;
             for (var i = 0; i < column.Count; ++i)

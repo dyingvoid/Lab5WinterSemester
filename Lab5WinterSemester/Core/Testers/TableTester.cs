@@ -9,11 +9,11 @@ namespace Lab5WinterSemester.Core.Testers;
 
 public class TableTester : ITester
 {
-    private TableBase _table;
+    private DataBase _dataBase;
 
-    public TableTester(TableBase table)
+    public TableTester(DataBase dataBase)
     {
-        _table = table;
+        _dataBase = dataBase;
     }
 
     private delegate TV MyDelegate<TU, out TV>( out TU output);
@@ -44,8 +44,8 @@ public class TableTester : ITester
 
     private bool CheckStructureEquality(out string errorMessage)
     {
-        var structureNames = _table.Types.Keys.ToHashSet();
-        var columnNames = _table.Names.ToHashSet();
+        var structureNames = _dataBase.Types.Keys.ToHashSet();
+        var columnNames = _dataBase.Names.ToHashSet();
 
         errorMessage = "";
         return structureNames.SetEquals(columnNames);
@@ -53,9 +53,9 @@ public class TableTester : ITester
     
     private bool CheckTableDimensionsEquality(out string errorMessage)
     {
-        var length = _table.Table.First().Value.Count;
+        var length = _dataBase.Table.First().Value.Count;
         
-        foreach (var (key, column) in _table.Table)
+        foreach (var (key, column) in _dataBase.Table)
         {
             if (column.Count != length)
             {
@@ -71,9 +71,9 @@ public class TableTester : ITester
     private bool CheckColumnsDataTypeEquality(out string errorMessage)
     {
         // Foreach column
-        foreach (var (key, column) in _table.Table)
+        foreach (var (key, column) in _dataBase.Table)
         {
-            var state = _table.Types.TryGetValue(key, out var columnType);
+            var state = _dataBase.Types.TryGetValue(key, out var columnType);
             
             try
             {

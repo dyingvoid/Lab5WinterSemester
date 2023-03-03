@@ -15,17 +15,17 @@ public class TableSimpleFactory
         _supportedFileExtensions = new List<string>() { ".csv" };
     }
 
-    private TableBase CreateTable(FileInfo tableFile, Dictionary<string, string> configuration)
+    private DataBase CreateTable(FileInfo tableFile, Dictionary<string, string> configuration)
     {
         var table = ReadFromFileToDict(tableFile, configuration);
         var columnTypes = SetColumnTypes(configuration);
         MakeEmptyAndSpaceElementsNull(table);
 
-        var tableBase = new TableBase(table, columnTypes);
+        var tableBase = new DataBase(table, columnTypes);
 
         var tester = new TableTester(tableBase);
         
-        return tester.Test() ? tableBase : new TableBase();
+        return tester.Test() ? tableBase : new DataBase();
     }
 
     private Dictionary<string, List<object?>> ReadFromFileToList(FileInfo tableFile)
