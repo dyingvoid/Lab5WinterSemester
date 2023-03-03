@@ -25,4 +25,10 @@ public class MainModel : IMainModel
     {
         return DataBases.FirstOrDefault(dataBase => dataBase.SchemaFile == dataBaseSchemaFile);
     }
+
+    public DataBase CreateDataBase(FileInfo dataBaseSchemaFile)
+    {
+        DataBaseSimpleFactory factory = new DataBaseSimpleFactory();
+        return factory.CreateDataBase(dataBaseSchemaFile);
+    }
 }

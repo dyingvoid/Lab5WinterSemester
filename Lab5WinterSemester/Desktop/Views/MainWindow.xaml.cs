@@ -20,12 +20,22 @@ namespace Lab5WinterSemester.Desktop.Views
         {
             InitializeComponent();
 
+            Test();
+
             _mainModel = new MainModel();
             DataContext = new MainWindowViewModel(_mainModel);
             
             ConfigureButtons();
         }
-        
+
+        private void Test()
+        {
+            string jsonPath = @"C:\Users\Dying\RiderProjects\Lab5WinterSemester\Lab5WinterSemester\Core\structure.json";
+            var file = new FileInfo(jsonPath);
+
+            var factory = new Core.TableClasses.DataBaseSimpleFactory();
+            var database = factory.CreateDataBase(file);
+        }
 
         private void ConfigureButtons()
         {
@@ -36,6 +46,8 @@ namespace Lab5WinterSemester.Desktop.Views
         
         private void OpenFile(object sender, RoutedEventArgs e)
         {
+            var vm = (MainWindowViewModel)DataContext;
+            
             var fileDialog = new OpenFileDialog();
             FileInfo dataBaseSchemaFile;
             if (fileDialog.ShowDialog() == true)
