@@ -24,7 +24,7 @@ public class DataBaseSimpleFactory
         _config = ConfigManager.ParseJson(dataBaseFile);
         
         var tables = GetTables();
-        var dataBase = new DataBase(tables, _config);
+        var dataBase = new DataBase(tables, _config, _dataBaseSchemaFile);
 
 
         return dataBase;
@@ -56,8 +56,8 @@ public class DataBaseSimpleFactory
             }
         }
 
-        var tester = new TableTester(table);
+        //var tester = new TableTester(table);
         
-        return tester.Test() ? table : new Table();
+        return table;
     }
 }

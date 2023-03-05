@@ -14,7 +14,8 @@ public class MainWindowViewModel : Notifier, IMainWindowViewModel
     public MainWindowViewModel(IMainModel model)
     {
         _model = model;
-        GetDataBases();
+        DataBases = _model.DataBases;
+        //GetDataBases();
     }
 
     public RelayCommand AddDataBaseCommand
@@ -30,14 +31,21 @@ public class MainWindowViewModel : Notifier, IMainWindowViewModel
         }
     }
 
-    public ObservableCollection<IDataBase> DataBases { get; set; }
+    public ObservableCollection<DataBase> DataBases { get; set; }
 
-    private void GetDataBases()
+
+    /*private void GetDataBases()
     {
         foreach (IDataBase db in _model.DataBases)
         {
             DataBases.Add(db);
         }
+    }*/
+
+    public void OpenDataBase(FileInfo dataBaseFile)
+    {
+        _model.DataBases.Add(_model.CreateDataBase(dataBaseFile));
+        DataBases = _model.DataBases;
     }
 
     public void AddDataBase()

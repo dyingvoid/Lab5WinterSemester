@@ -1,7 +1,9 @@
-﻿using System.IO;
+﻿using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using Lab5WinterSemester.Core.TableClasses;
 using Lab5WinterSemester.Desktop.Models;
 using Lab5WinterSemester.Desktop.UserControls;
 using Lab5WinterSemester.Desktop.ViewModels;
@@ -15,26 +17,15 @@ namespace Lab5WinterSemester.Desktop.Views
     public partial class MainWindow : Window
     {
         private IMainModel _mainModel;
-        
+
         public MainWindow()
         {
             InitializeComponent();
 
-            Test();
-
             _mainModel = new MainModel();
             DataContext = new MainWindowViewModel(_mainModel);
-            
+
             ConfigureButtons();
-        }
-
-        private void Test()
-        {
-            string jsonPath = @"C:\Users\Dying\RiderProjects\Lab5WinterSemester\Lab5WinterSemester\Core\structure.json";
-            var file = new FileInfo(jsonPath);
-
-            var factory = new Core.TableClasses.DataBaseSimpleFactory();
-            var database = factory.CreateDataBase(file);
         }
 
         private void ConfigureButtons()
@@ -53,6 +44,7 @@ namespace Lab5WinterSemester.Desktop.Views
             if (fileDialog.ShowDialog() == true)
             {
                 dataBaseSchemaFile = new FileInfo(fileDialog.FileName);
+                vm.OpenDataBase(dataBaseSchemaFile);
             }
         }
 

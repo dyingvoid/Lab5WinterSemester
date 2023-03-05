@@ -11,15 +11,17 @@ public class DataBase : IDataBase
         Tables = new List<Table>();
     }
 
-    public DataBase(List<Table> tables, Dictionary<FileInfo, Dictionary<string, Type?>> config)
+    public DataBase(List<Table> tables, Dictionary<FileInfo, Dictionary<string, Type?>> config, FileInfo schemaFile)
     {
         Tables = tables;
         Config = config;
+        SchemaFile = schemaFile;
     }
 
     public FileInfo SchemaFile { get; set; }
+    public string SchemaFileName => SchemaFile.Name;
     public List<Table> Tables { get; set; }
-    public Dictionary<FileInfo, Dictionary<string, Type>> Config { get; set; }
+    public Dictionary<FileInfo, Dictionary<string, Type?>> Config { get; set; }
 
 
     public void Update(IDataBase dataBase)

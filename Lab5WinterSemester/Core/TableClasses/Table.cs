@@ -7,6 +7,7 @@ namespace Lab5WinterSemester.Core.TableClasses;
 
 public class Table : ITable, IEnumerable
 {
+    public string Name { get; set; }
     public Dictionary<string, List<object?>> Elements { get; set; }
     public Dictionary<string, Type> Types { get; set; }
     public Tuple<int, int> Shape => Tuple.Create(Elements.Count, Elements.First().Value.Count);
@@ -28,6 +29,8 @@ public class Table : ITable, IEnumerable
         {
             Elements.Add(key, new List<object?>());
         }
+
+        Name = "Random Name";
     }
     
     public List<object?> GetColumn(string columnName)

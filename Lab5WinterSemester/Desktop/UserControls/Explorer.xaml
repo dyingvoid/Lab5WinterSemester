@@ -6,27 +6,7 @@
              xmlns:local="clr-namespace:Lab5WinterSemester.Desktop.UserControls"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        <TreeView>
-            <TextBox>Элемент TreeView</TextBox>
-            <TreeViewItem Header="Базы данных">
-                <TreeViewItem Header="MS SQL Server" />
-                <TreeViewItem Header="MySQL" />
-                <TreeViewItem Header="MongoDB" />
-                <TreeViewItem Header="Postgres" />
-            </TreeViewItem>
-            <TreeViewItem Header="Языки программирования">
-                <TreeViewItem Header="C-языки">
-                    <TreeViewItem Header="C#" />
-                    <TreeViewItem Header="C/C++" />
-                    <TreeViewItem Header="Java" />
-                </TreeViewItem>
-                <TreeViewItem Header="Basic">
-                    <TreeViewItem Header="Visual Basic" />
-                    <TreeViewItem Header="VB.Net" />
-                    <TreeViewItem Header="PureBasic" />
-                </TreeViewItem>
-            </TreeViewItem>
-        </TreeView>
-    </Grid>
+    <TreeView>
+            <TreeViewItem Header="Базы данных"/>
+    </TreeView>
 </UserControl>
