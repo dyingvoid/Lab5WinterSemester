@@ -15,7 +15,19 @@
             <controls:MainColumnDefinition Width="5*"/>
             <controls:MainColumnDefinition Width="20*" x:Name="Four"/>
         </Grid.ColumnDefinitions>
-        <controls:MenuBar x:Name="menuBar" Grid.Column="0"/>
+        <Grid x:Name="MenuBarGrid" ToggleButton.Checked="ChangeDefinitionVisibility"
+              ToggleButton.Unchecked="ChangeDefinitionVisibility">
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <Button Grid.Row="0" x:Name="BtnDbOpen" Click="AddDb">Open DB</Button>
+            <ToggleButton Grid.Row="1" x:Name="TogBtnExplorer">Explorer</ToggleButton>
+            <ToggleButton Grid.Row="2" x:Name="TogBtnMetaData">MetaData</ToggleButton>
+            <ToggleButton Grid.Row="3" x:Name="TogBtnData">Data</ToggleButton>
+        </Grid>
         <TreeView x:Name="Explorer" Grid.Column="1" ItemsSource="{Binding Path=DataBases}">
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type src:DataBase}" 

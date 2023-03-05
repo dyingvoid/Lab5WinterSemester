@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Lab5WinterSemester.Core.TableClasses;
 
 public class Table : ITable, IEnumerable
 {
-    public string Name { get; set; }
+    public FileInfo DataFile { get; set; }
+    public string Name => DataFile.Name;
     public Dictionary<string, List<object?>> Elements { get; set; }
     public Dictionary<string, Type> Types { get; set; }
     public Tuple<int, int> Shape => Tuple.Create(Elements.Count, Elements.First().Value.Count);
@@ -19,8 +21,9 @@ public class Table : ITable, IEnumerable
         Types = new Dictionary<string, Type>();
     }
 
-    public Table(Dictionary<string, Type> configuration)
+    public Table(FileInfo dataFile, Dictionary<string, Type> configuration)
     {
+        DataFile = dataFile;
         Elements = new Dictionary<string, List<object?>>();
         Types = configuration;
         
@@ -29,8 +32,6 @@ public class Table : ITable, IEnumerable
         {
             Elements.Add(key, new List<object?>());
         }
-
-        Name = "Random Name";
     }
     
     public List<object?> GetColumn(string columnName)

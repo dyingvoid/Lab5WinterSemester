@@ -24,33 +24,16 @@ namespace Lab5WinterSemester.Desktop.Views
 
             _mainModel = new MainModel();
             DataContext = new MainWindowViewModel(_mainModel);
-
-            ConfigureButtons();
         }
 
-        private void ConfigureButtons()
+        private void AddDb(object sender, RoutedEventArgs e)
         {
-            menuBar.BtnDbOpen.Click += OpenFile;
-            menuBar.AddHandler(ToggleButton.CheckedEvent, new RoutedEventHandler(ChangeDefinitionVisibility));
-            menuBar.AddHandler(ToggleButton.UncheckedEvent, new RoutedEventHandler(ChangeDefinitionVisibility));
-        }
-        
-        private void OpenFile(object sender, RoutedEventArgs e)
-        {
-            var vm = (MainWindowViewModel)DataContext;
-            
-            var fileDialog = new OpenFileDialog();
-            FileInfo dataBaseSchemaFile;
-            if (fileDialog.ShowDialog() == true)
-            {
-                dataBaseSchemaFile = new FileInfo(fileDialog.FileName);
-                vm.OpenDataBase(dataBaseSchemaFile);
-            }
+            ((MainWindowViewModel)DataContext).AddDataBase();
         }
 
         private void ChangeDefinitionVisibility(object sender, RoutedEventArgs e)
         {
-            var indexOfButton = menuBar.MenuBarGrid.Children.IndexOf((UIElement)e.OriginalSource);
+            var indexOfButton = MenuBarGrid.Children.IndexOf((UIElement)e.OriginalSource);
             var definition = MainGrid.ColumnDefinitions
                 .Cast<MainColumnDefinition>().GetEnumerator();
             

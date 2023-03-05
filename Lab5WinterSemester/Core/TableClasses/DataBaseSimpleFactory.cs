@@ -23,28 +23,28 @@ public class DataBaseSimpleFactory
         _dataBaseSchemaFile = dataBaseFile;
         _config = ConfigManager.ParseJson(dataBaseFile);
         
-        var tables = GetTables();
+        var tables = CreateTables();
         var dataBase = new DataBase(tables, _config, _dataBaseSchemaFile);
 
 
         return dataBase;
     }
 
-    private List<Table> GetTables()
+    private List<Table> CreateTables()
     {
         var list = new List<Table>();
         
         foreach (var (tableFile, types) in _config)
         {
-            list.Add(GetTable(tableFile, types));
+            list.Add(CreateTable(tableFile, types));
         }
 
         return list;
     }
 
-    private Table GetTable(FileInfo tableFile, Dictionary<string, Type> tableConfiguration)
+    private Table CreateTable(FileInfo tableFile, Dictionary<string, Type> tableConfiguration)
     {
-        var table = new Table(tableConfiguration);
+        var table = new Table(tableFile, tableConfiguration);
         var data = File.ReadAllLines(tableFile.FullName);
 
         foreach (var str in data)

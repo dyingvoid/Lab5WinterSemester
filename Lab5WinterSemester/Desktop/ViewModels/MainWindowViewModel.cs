@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.IO;
+using System.Windows.Input;
 using Lab5WinterSemester.Core.TableClasses;
 using Lab5WinterSemester.Desktop.Models;
 using Microsoft.Win32;
@@ -42,14 +43,13 @@ public class MainWindowViewModel : Notifier, IMainWindowViewModel
         }
     }*/
 
-    public void OpenDataBase(FileInfo dataBaseFile)
+    public void AddDataBase(object sender, ExecutedRoutedEventArgs e)
     {
-        _model.DataBases.Add(_model.CreateDataBase(dataBaseFile));
-        DataBases = _model.DataBases;
+        _model.AddDataBase();
     }
 
     public void AddDataBase()
     {
-        
+        _model.AddDataBase();
     }
 }
