@@ -7,7 +7,6 @@ namespace Lab5WinterSemester.Desktop.ViewModels;
 
 public interface IMainWindowViewModel
 {
-    public void AddDataBase();
-    public ObservableCollection<DataBase> DataBases { get; set; }
-    public void AddDataBase(object sender, ExecutedRoutedEventArgs e);
+    ObservableCollection<DataBase> DataBases { get; set; }
+    ICommand AddDataBaseCommand { get; }
 }

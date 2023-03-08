@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using Lab5WinterSemester.Core.TableClasses;
 using Lab5WinterSemester.Desktop.Models;
 using Lab5WinterSemester.Desktop.UserControls;
@@ -24,11 +25,6 @@ namespace Lab5WinterSemester.Desktop.Views
 
             _mainModel = new MainModel();
             DataContext = new MainWindowViewModel(_mainModel);
-        }
-
-        private void AddDb(object sender, RoutedEventArgs e)
-        {
-            ((MainWindowViewModel)DataContext).AddDataBase();
         }
 
         private void ChangeDefinitionVisibility(object sender, RoutedEventArgs e)
