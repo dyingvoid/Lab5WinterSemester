@@ -1,14 +1,11 @@
-﻿using System.Collections.ObjectModel;
-using System.IO;
+﻿using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls.Primitives;
-using System.Windows.Input;
 using Lab5WinterSemester.Core.TableClasses;
 using Lab5WinterSemester.Desktop.Models;
 using Lab5WinterSemester.Desktop.UserControls;
 using Lab5WinterSemester.Desktop.ViewModels;
-using Microsoft.Win32;
 
 namespace Lab5WinterSemester.Desktop.Views
 {
@@ -18,7 +15,7 @@ namespace Lab5WinterSemester.Desktop.Views
     public partial class MainWindow : Window
     {
         private IMainModel _mainModel;
-
+        
         public MainWindow()
         {
             InitializeComponent();
