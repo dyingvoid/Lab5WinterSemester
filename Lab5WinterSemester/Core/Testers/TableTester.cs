@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Lab5WinterSemester.Core.Loggers;
 using Lab5WinterSemester.Core.Managers;
 using Lab5WinterSemester.Core.TableClasses;
@@ -9,96 +10,125 @@ namespace Lab5WinterSemester.Core.Testers;
 
 public class TableTester : ITester
 {
-    private Table _table;
+    private ITable _table;
 
-    public TableTester(Table table)
+    public TableTester(ILogger logger)
+    {
+        Logger = logger;
+    }
+
+    public bool Test(ITable table)
     {
         _table = table;
-    }
-
-    private delegate TV MyDelegate<TU, out TV>( out TU output);
-    
-    public bool Test()
-    {
-        var testList = SelectTests();
-        foreach (var test in testList)
-        {
-            var state = test(out var errorMessage);
-            Logger.GetInstance().Log(new Exception(errorMessage));
-        }
+        testFailures += table.Name + "\n";
         
-        return false;
+        var answer= CheckStructureEquality() &&
+               CheckTableDimensionsEquality() &&
+               CheckColumnsDataTypeEquality();
+        
+        if(!answer)
+            Logger.Log(new Exception(testFailures));
+
+        return answer;
     }
 
-    private List<MyDelegate<string, bool>> SelectTests()
+    public bool Test(IDataBase dataBase)
     {
-        var testList = new List<MyDelegate<string, bool>>
+        bool answer = true;
+        
+        foreach (var db in dataBase.Tables)
         {
-            CheckStructureEquality,
-            CheckTableDimensionsEquality,
-            CheckColumnsDataTypeEquality
-        };
+            answer = answer && Test(db);
+        }
 
-        return testList;
-    }
-
-    private bool CheckStructureEquality(out string errorMessage)
-    {
-        var structureNames = _table.Types.Keys.ToHashSet();
-        var columnNames = _table.Names.ToHashSet();
-
-        errorMessage = "";
-        return structureNames.SetEquals(columnNames);
+        return answer;
     }
     
-    private bool CheckTableDimensionsEquality(out string errorMessage)
+    public ILogger Logger { get; set; }
+    public string testFailures { get; private set; }
+
+    private bool CheckStructureEquality()
     {
-        var length = _table.Elements.First().Value.Count;
+
+        var extraColumns = _table.Elements.Keys.Except(_table.Types.Keys).ToArray();
+        var missingColumns = _table.Types.Keys.Except(_table.Elements.Keys).ToArray();
+
+        testFailures += "Extra columns not found in config: " + String.Join(", ", extraColumns) +
+                        "\nMissing columns: " + String.Join(", ", missingColumns) + "\n";
+
+
+        return extraColumns.Length == 0 && missingColumns.Length == 0;
+    }
+    
+    private bool CheckTableDimensionsEquality()
+    {
+        var wrongSizedColumns = new List<string>();
         
         foreach (var (key, column) in _table.Elements)
         {
-            if (column.Count != length)
+            if (column.Count != _table.Shape.Item2)
             {
-                errorMessage = $"Wrong size of dimensions. Column '{key}' with size of {column.Count} was met.";
-                return false;
+                wrongSizedColumns.Add(key);
             }
         }
 
-        errorMessage = "";
-        return true;
+        testFailures += "Columns of wrong size(size is set according to first column): " +
+                        String.Join(", ", wrongSizedColumns) + "\n";
+
+        return wrongSizedColumns.Count == 0;
     }
     
-    private bool CheckColumnsDataTypeEquality(out string errorMessage)
+    private bool CheckColumnsDataTypeEquality()
     {
-        // Foreach column
-        foreach (var (key, column) in _table.Elements)
+        var columnsWithWrongTypeElements = new List<string>();
+        List<object?> wrongElements = new List<object?>();
+        
+        foreach (var (columnName, column) in _table.Elements)
         {
-            var state = _table.Types.TryGetValue(key, out var columnType);
+            var state = _table.Types.TryGetValue(columnName, out var columnType);
             
+            if(!CheckColumnDataTypeEquality(column, columnType, out wrongElements))
+                columnsWithWrongTypeElements.Add(columnName);
+        }
+
+        testFailures += "Columns with elements of wrong type: " +
+                        String.Join(", ", columnsWithWrongTypeElements) + "\n" +
+                        "Wrong elements: " + String.Join(", ", wrongElements) + "\n";
+
+        return columnsWithWrongTypeElements.Count == 0;
+    }
+    
+    private bool CheckColumnDataTypeEquality(List<object?> column, Type type, out List<object?> wrongElements)
+    {
+        wrongElements = new List<object?>();
+        bool answer = true;
+        
+        foreach (var element in column)
+        {
+            if (type == typeof(String)) continue;
+            
+            MethodInfo? castGenericMethod = null;
             try
             {
-                CheckColumnDataTypeEquality(column, columnType);
+                castGenericMethod = ReflectionManager.TryMakeGenericWithType(type);
             }
             catch (Exception)
             {
-                errorMessage = $"Error in {key} column.";
-                return false;
+                testFailures += "Unknown type was met: " + type;
+                answer = false;
+            }
+
+            try
+            {
+                ReflectionManager.TryCastToType(type, castGenericMethod, element);
+            }
+            catch (Exception)
+            {
+                wrongElements.Add(element);
+                answer = false;
             }
         }
 
-        errorMessage = "";
-        return true;
-    }
-    
-    private void CheckColumnDataTypeEquality(List<object?> column, Type type)
-    {
-        foreach (var element in column)
-        {
-            if (type != typeof(String))
-            {
-                var castGenericMethod = ReflectionManager.TryMakeGenericWithType(type);
-                ReflectionManager.TryCastToType(type, castGenericMethod, element);
-            }
-        }
+        return answer;
     }
 }

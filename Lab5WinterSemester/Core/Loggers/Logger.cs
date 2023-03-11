@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Lab5WinterSemester.Core.Loggers;
 
-public class Logger
+public class Logger : ILogger
 {
     private static Logger _instance = new Logger();
     private List<Exception> _exceptions;

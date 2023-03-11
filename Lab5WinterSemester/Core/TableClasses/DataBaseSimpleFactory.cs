@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Lab5WinterSemester.Core.Loggers;
 using Lab5WinterSemester.Core.Managers;
 using Lab5WinterSemester.Core.Testers;
 
@@ -25,9 +26,9 @@ public class DataBaseSimpleFactory
         
         var tables = CreateTables();
         var dataBase = new DataBase(tables, _config, _dataBaseSchemaFile);
-
-
-        return dataBase;
+        var tester = new TableTester(Logger.GetInstance());
+        
+        return tester.Test(dataBase) ? dataBase : new DataBase();
     }
 
     private List<Table> CreateTables()
@@ -56,8 +57,6 @@ public class DataBaseSimpleFactory
             }
         }
 
-        //var tester = new TableTester(table);
-        
         return table;
     }
 }

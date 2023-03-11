@@ -28,7 +28,8 @@
             <ToggleButton Grid.Row="2" x:Name="TogBtnMetaData"/>
             <ToggleButton Grid.Row="3" x:Name="TogBtnData"/>
         </Grid>
-        <TreeView x:Name="Explorer" Grid.Column="1" ItemsSource="{Binding Path=DataBases}">
+        <TreeView x:Name="Explorer" Grid.Column="1" ItemsSource="{Binding Path=DataBases}"
+                  SelectedItemChanged="ConvertTableToDataView">
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type src:DataBase}" 
                                           ItemsSource="{Binding Tables}">
@@ -58,7 +59,7 @@
             </StackPanel>
         </ScrollViewer>
         <DataGrid x:Name="Data" Grid.Column="3" 
-                  ItemsSource="{Binding ElementName=Explorer, Path=SelectedItem.GuiElements}"
+                  ItemsSource="{Binding ElementName=Window, Path=DataView}"
                   AutoGenerateColumns="True"/>
     </Grid>
 </Window>
