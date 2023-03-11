@@ -27,7 +27,7 @@ public class TableTester : ITester
                CheckColumnsDataTypeEquality();
         
         if(!answer)
-            Logger.Log(new Exception(testFailures));
+            Logger.Log(testFailures);
 
         return answer;
     }

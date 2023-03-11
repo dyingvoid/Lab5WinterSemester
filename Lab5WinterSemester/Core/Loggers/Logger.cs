@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows;
 
 namespace Lab5WinterSemester.Core.Loggers;
 
@@ -12,7 +13,7 @@ public class Logger : ILogger
         _exceptions = new List<Exception>();
     }
 
-    public static Logger GetInstance()
+    public static ILogger GetInstance()
     {
         return _instance;
     }
@@ -20,6 +21,11 @@ public class Logger : ILogger
     public void Log(Exception exception)
     {
         _exceptions.Add(exception);
+    }
+
+    public void Log(string message)
+    {
+        var result = MessageBox.Show(message);
     }
 
     public void Log(Exception exception, string extraMessage)
