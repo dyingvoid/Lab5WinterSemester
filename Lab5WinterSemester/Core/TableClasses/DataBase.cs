@@ -22,11 +22,4 @@ public class DataBase : IDataBase
     public string SchemaFileName => SchemaFile.Name;
     public List<Table> Tables { get; set; }
     public Dictionary<FileInfo, Dictionary<string, Type?>> Config { get; set; }
-
-
-    public void Update(IDataBase dataBase)
-    {
-        Tables = dataBase.Tables;
-        Config = dataBase.Config;
-    }
 }

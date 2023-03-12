@@ -3,63 +3,58 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:controls="clr-namespace:Lab5WinterSemester.Desktop.UserControls"
         xmlns:src="clr-namespace:Lab5WinterSemester.Core.TableClasses"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         x:Name="Window">
     <Grid x:Name="MainGrid">
-        <Grid.ColumnDefinitions>
-            <controls:MainColumnDefinition Width="25"/>
-            <controls:MainColumnDefinition Width="3*"/>
-            <controls:MainColumnDefinition x:Name="Third" Width="5*"/>
-            <controls:MainColumnDefinition Width="20*" x:Name="Four"/>
-        </Grid.ColumnDefinitions>
-        <Grid x:Name="MenuBarGrid" ToggleButton.Checked="ChangeDefinitionVisibility"
-              ToggleButton.Unchecked="ChangeDefinitionVisibility">
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            <Button Grid.Row="0" x:Name="BtnDbOpen" Command="{Binding AddDataBaseCommand}"/>
-            <ToggleButton Grid.Row="1" x:Name="TogBtnExplorer"/>
-            <ToggleButton Grid.Row="2" x:Name="TogBtnMetaData"/>
-            <ToggleButton Grid.Row="3" x:Name="TogBtnData"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="35*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" x:Name="MenuBarGrid">
+            <Button Grid.Row="0" x:Name="BtnDbOpen" Command="{Binding AddDataBaseCommand}"
+                    Content="Open data base(.json)"/>
+        </Grid >
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="8*"/>
+                <ColumnDefinition Width="10*"/>
+                <ColumnDefinition Width="20*"/>
+            </Grid.ColumnDefinitions>
+            <TreeView x:Name="Explorer" Grid.Column="0" ItemsSource="{Binding Path=DataBases}"
+                      SelectedItemChanged="ConvertTableToDataView">
+                <TreeView.Resources>
+                    <HierarchicalDataTemplate DataType="{x:Type src:DataBase}" 
+                                              ItemsSource="{Binding Tables}">
+                       <StackPanel>
+                           <TextBlock Text="{Binding Path=SchemaFileName}"/>
+                       </StackPanel>
+                   </HierarchicalDataTemplate>
+                    <HierarchicalDataTemplate DataType="{x:Type src:Table}">
+                        <StackPanel>
+                            <TextBlock Text="{Binding Path=Name}"></TextBlock>
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+               </TreeView.Resources>
+            </TreeView>
+            <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="DataFile: ">
+                        <TextBlock Text="{Binding ElementName=Explorer, Path=SelectedItem.DataFile}"/>
+                    </TextBlock>
+                    <TextBlock Text="Name: ">
+                        <TextBlock Text="{Binding ElementName=Explorer, Path=SelectedItem.Name}"></TextBlock>
+                    </TextBlock>
+                    <TextBlock Text="Shape: ">
+                        <TextBlock Text="{Binding ElementName=Explorer, Path=SelectedItem.Shape}"></TextBlock>
+                    </TextBlock>
+                    <DataGrid ItemsSource="{Binding ElementName=Explorer, Path=SelectedItem.Types}"/>
+                </StackPanel>
+            </ScrollViewer>
+            <DataGrid x:Name="Data" Grid.Column="2" 
+                      ItemsSource="{Binding ElementName=Window, Path=DataView}"
+                      AutoGenerateColumns="True"/>
+            </Grid>
         </Grid>
-        <TreeView x:Name="Explorer" Grid.Column="1" ItemsSource="{Binding Path=DataBases}"
-                  SelectedItemChanged="ConvertTableToDataView">
-            <TreeView.Resources>
-                <HierarchicalDataTemplate DataType="{x:Type src:DataBase}" 
-                                          ItemsSource="{Binding Tables}">
-                   <StackPanel>
-                       <TextBlock Text="{Binding Path=SchemaFileName}"/>
-                   </StackPanel>
-               </HierarchicalDataTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type src:Table}">
-                    <StackPanel>
-                        <TextBlock Text="{Binding Path=Name}"></TextBlock>
-                    </StackPanel>
-                </HierarchicalDataTemplate>
-           </TreeView.Resources>
-        </TreeView>
-        <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Auto">
-            <StackPanel>
-                <TextBlock Text="DataFile: ">
-                    <TextBlock Text="{Binding ElementName=Explorer, Path=SelectedItem.DataFile}"></TextBlock>
-                </TextBlock>
-                <TextBlock Text="Name: ">
-                    <TextBlock Text="{Binding ElementName=Explorer, Path=SelectedItem.Name}"></TextBlock>
-                </TextBlock>
-                <TextBlock Text="Shape: ">
-                    <TextBlock Text="{Binding ElementName=Explorer, Path=SelectedItem.Shape}"></TextBlock>
-                </TextBlock>
-                <DataGrid ItemsSource="{Binding ElementName=Explorer, Path=SelectedItem.Types}"/>
-            </StackPanel>
-        </ScrollViewer>
-        <DataGrid x:Name="Data" Grid.Column="3" 
-                  ItemsSource="{Binding ElementName=Window, Path=DataView}"
-                  AutoGenerateColumns="True"/>
-    </Grid>
 </Window>

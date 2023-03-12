@@ -5,9 +5,9 @@ using Lab5WinterSemester.Desktop.Models;
 
 namespace Lab5WinterSemester.Desktop.ViewModels;
 
-public class MainWindowViewModel : Notifier, IMainWindowViewModel
+public class MainWindowViewModel : IMainWindowViewModel
 {
-    private IMainModel _model;
+    private readonly IMainModel _model;
     private ICommand _addDataBaseCommand;
 
     public ICommand AddDataBaseCommand

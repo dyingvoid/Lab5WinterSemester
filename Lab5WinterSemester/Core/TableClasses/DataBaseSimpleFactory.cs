@@ -10,15 +10,9 @@ namespace Lab5WinterSemester.Core.TableClasses;
 
 public class DataBaseSimpleFactory
 {
-    private List<string> _supportedFileExtensions;
     private FileInfo _dataBaseSchemaFile;
     private Dictionary<FileInfo, Dictionary<string, Type?>> _config;
 
-    public DataBaseSimpleFactory()
-    {
-        _supportedFileExtensions = new List<string>() { ".csv" };
-    }
-    
     public DataBase CreateDataBase(FileInfo dataBaseFile)
     {
         _dataBaseSchemaFile = dataBaseFile;
