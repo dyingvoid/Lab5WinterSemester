@@ -17,11 +17,11 @@ public class DataBaseSimpleFactory
     {
         _dataBaseSchemaFile = dataBaseFile;
         _config = ConfigManager.ParseJson(dataBaseFile);
-        
+
         var tables = CreateTables();
         var dataBase = new DataBase(tables, _config, _dataBaseSchemaFile);
-        var tester = new TableTester(Logger.GetInstance());
-        
+        var tester = new DataBaseTester(Logger.GetInstance());
+
         return tester.Test(dataBase) ? dataBase : new DataBase();
     }
 
@@ -31,6 +31,10 @@ public class DataBaseSimpleFactory
         
         foreach (var (tableFile, types) in _config)
         {
+            var fileTester = new FileTester(Logger.GetInstance());
+            if (!fileTester.Test(tableFile))
+                continue;
+            
             list.Add(CreateTable(tableFile, types));
         }
 

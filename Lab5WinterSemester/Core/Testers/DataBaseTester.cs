@@ -8,37 +8,22 @@ using Lab5WinterSemester.Core.TableClasses;
 
 namespace Lab5WinterSemester.Core.Testers;
 
-public class TableTester : ITester
+public class DataBaseTester : ITester<IDataBase>
 {
     private ITable _table;
 
-    public TableTester(ILogger logger)
+    public DataBaseTester(ILogger logger)
     {
         Logger = logger;
-    }
-
-    public bool Test(ITable table)
-    {
-        _table = table;
-        testFailures += table.Name + "\n";
-        
-        var answer= CheckStructureEquality() &&
-               CheckTableDimensionsEquality() &&
-               CheckColumnsDataTypeEquality();
-        
-        if(!answer)
-            Logger.Log(testFailures);
-
-        return answer;
     }
 
     public bool Test(IDataBase dataBase)
     {
         bool answer = true;
         
-        foreach (var db in dataBase.Tables)
+        foreach (var table in dataBase.Tables)
         {
-            answer = answer && Test(db);
+            answer = answer && Test(table);
         }
 
         return answer;
@@ -46,6 +31,21 @@ public class TableTester : ITester
     
     public ILogger Logger { get; set; }
     public string testFailures { get; private set; }
+    
+    private bool Test(ITable table)
+    {
+        _table = table;
+        testFailures += table.Name + "\n";
+        
+        var answer= CheckStructureEquality() &&
+                    CheckTableDimensionsEquality() &&
+                    CheckColumnsDataTypeEquality();
+        
+        if(!answer)
+            Logger.Log(testFailures);
+
+        return answer;
+    }
 
     private bool CheckStructureEquality()
     {
@@ -81,14 +81,17 @@ public class TableTester : ITester
     private bool CheckColumnsDataTypeEquality()
     {
         var columnsWithWrongTypeElements = new List<string>();
-        List<object?> wrongElements = new List<object?>();
+        var wrongElements = new List<object?>();
         
         foreach (var (columnName, column) in _table.Elements)
         {
             var state = _table.Types.TryGetValue(columnName, out var columnType);
-            
-            if(!CheckColumnDataTypeEquality(column, columnType, out wrongElements))
+
+            if (!CheckColumnDataTypeEquality(column, columnType, out var wrongElementsColumn))
+            {
                 columnsWithWrongTypeElements.Add(columnName);
+                wrongElements.AddRange(wrongElementsColumn);
+            }
         }
 
         testFailures += "Columns with elements of wrong type: " +
@@ -101,23 +104,25 @@ public class TableTester : ITester
     private bool CheckColumnDataTypeEquality(List<object?> column, Type type, out List<object?> wrongElements)
     {
         wrongElements = new List<object?>();
+        
+        if (type == typeof(string))
+            return true;
+        
         bool answer = true;
+
+        MethodInfo? castGenericMethod = null;
+        try
+        {
+            castGenericMethod = ReflectionManager.TryMakeGenericWithType(type);
+        }
+        catch (Exception)
+        {
+            testFailures += "Unknown type was met: " + type  + "\n";
+            answer = false;
+        }
         
         foreach (var element in column)
         {
-            if (type == typeof(String)) continue;
-            
-            MethodInfo? castGenericMethod = null;
-            try
-            {
-                castGenericMethod = ReflectionManager.TryMakeGenericWithType(type);
-            }
-            catch (Exception)
-            {
-                testFailures += "Unknown type was met: " + type;
-                answer = false;
-            }
-
             try
             {
                 ReflectionManager.TryCastToType(type, castGenericMethod, element);
